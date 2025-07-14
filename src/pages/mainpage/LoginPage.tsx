@@ -1,13 +1,13 @@
 // app/login.tsx
 
+import { getAccessToken } from "@/api/authentication/authentication"; // orval 생성된 함수
+import { getUserInfo } from "@/api/user/user";
 import { KAKAO_LOGIN_URL } from "@env";
 import { router } from "expo-router";
 import React, { useRef } from "react";
 import { ActivityIndicator, Dimensions, Image, StyleSheet, Text, View } from "react-native";
 import { WebView } from "react-native-webview";
 import { useAuth } from "../../contexts/AuthContext";
-import { getAccessToken } from "@/api/authentication/authentication"; // orval 생성된 함수
-import { getUserInfo } from "@/api/user/user";
 
 const LoginPage = () => {
   const webviewRef = useRef(null);
@@ -48,7 +48,7 @@ const LoginPage = () => {
             source={{ uri: KAKAO_LOGIN_URL }}
             onNavigationStateChange={handleNavigationChange}
             startInLoadingState
-            renderLoading={() => <ActivityIndicator size="large" color="#ffffff" />}
+            renderLoading={() => <ActivityIndicator size='large' color='#ffffff' />}
           />
         </View>
       </View>
