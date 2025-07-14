@@ -1,13 +1,12 @@
 // app/login.tsx
-
-import { getAccessToken } from "@/api/authentication/authentication"; // orval 생성된 함수
-import { getUserInfo } from "@/api/user/user";
+import { getAccessToken } from "@/api/authentication/authentication"; // ✅ orval 생성된 토큰 API
+import { getUserInfo } from "@/api/user/user"; // ✅ orval 생성된 유저 정보 API
+import { useAuth } from "@/contexts/AuthContext"; // ✅ 전역 인증 상태
 import { KAKAO_LOGIN_URL } from "@env";
 import { router } from "expo-router";
 import React, { useRef } from "react";
 import { ActivityIndicator, Dimensions, Image, StyleSheet, Text, View } from "react-native";
 import { WebView } from "react-native-webview";
-import { useAuth } from "../../contexts/AuthContext";
 
 const LoginPage = () => {
   const webviewRef = useRef(null);
@@ -18,18 +17,18 @@ const LoginPage = () => {
 
     if (url.includes("/login/callback?success=true")) {
       try {
-        // 1️⃣ access token 가져오기
+        // ✅ 1. Access Token 발급
         const { data: tokenData } = await getAccessToken();
-        const token = (tokenData as any).access_token; // ⚠️ access_token 타입 지정 안 된 경우 cast
+        const token = (tokenData as any).access_token;
         if (!token) throw new Error("❌ 토큰 없음");
 
-        await setAccessToken(token); // AsyncStorage 저장 및 상태 관리
+        await setAccessToken(token); // AsyncStorage 저장 + Context 상태 저장
 
-        // 2️⃣ 사용자 정보 가져오기
+        // ✅ 2. 사용자 정보 가져오기
         const { data: userData } = await getUserInfo();
         setUser(userData);
 
-        // 3️⃣ 홈으로 이동
+        // ✅ 3. 홈으로 이동
         router.replace("/home");
       } catch (err) {
         console.error("❌ 로그인 처리 중 오류 발생:", err);
@@ -39,7 +38,7 @@ const LoginPage = () => {
 
   return (
     <View style={styles.container}>
-      <Image source={require("../assets/images/home.jpg")} style={styles.background} />
+      <Image source={require("@/assets/images/home.jpg")} style={styles.background} />
       <View style={styles.overlay}>
         <Text style={styles.title}>Runsh</Text>
         <View style={styles.webviewBox}>
@@ -55,6 +54,8 @@ const LoginPage = () => {
     </View>
   );
 };
+
+export default LoginPage;
 
 const styles = StyleSheet.create({
   container: { flex: 1 },
@@ -84,5 +85,3 @@ const styles = StyleSheet.create({
     overflow: "hidden",
   },
 });
-
-export default LoginPage;
